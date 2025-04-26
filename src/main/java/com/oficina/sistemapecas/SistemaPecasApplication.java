@@ -15,7 +15,7 @@ public class SistemaPecasApplication {
 		ConfigurableApplicationContext context = SpringApplication.run(SistemaPecasApplication.class);
 
 		javax.swing.SwingUtilities.invokeLater(() -> {
-			MainWindow mainWindow = new MainWindow();
+			MainWindow mainWindow = context.getBean(MainWindow.class);
 			mainWindow.exibir();
 		});
 
