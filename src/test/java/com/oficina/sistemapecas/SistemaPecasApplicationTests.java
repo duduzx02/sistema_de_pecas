@@ -1,4 +1,4 @@
-package com.oficina.sistema_pecas;
+package com.oficina.sistemapecas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

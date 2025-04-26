@@ -1,7 +1,7 @@
-package com.oficina.sistema_pecas.service;
+package com.oficina.sistemapecas.service;
 
-import com.oficina.sistema_pecas.model.Peca;
-import com.oficina.sistema_pecas.repository.PecaRepository;
+import com.oficina.sistemapecas.model.Peca;
+import com.oficina.sistemapecas.repository.PecaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

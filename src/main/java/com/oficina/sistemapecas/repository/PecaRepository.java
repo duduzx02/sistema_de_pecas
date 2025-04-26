@@ -1,6 +1,6 @@
-package com.oficina.sistema_pecas.repository;
+package com.oficina.sistemapecas.repository;
 
-import com.oficina.sistema_pecas.model.Peca;
+import com.oficina.sistemapecas.model.Peca;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

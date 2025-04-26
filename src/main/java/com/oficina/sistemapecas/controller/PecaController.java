@@ -1,7 +1,7 @@
-package com.oficina.sistema_pecas.controller;
+package com.oficina.sistemapecas.controller;
 
-import com.oficina.sistema_pecas.model.Peca;
-import com.oficina.sistema_pecas.service.PecaService;
+import com.oficina.sistemapecas.model.Peca;
+import com.oficina.sistemapecas.service.PecaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

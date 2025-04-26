@@ -1,4 +1,4 @@
-package com.oficina.sistema_pecas.model;
+package com.oficina.sistemapecas.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
