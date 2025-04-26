@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 @Component
@@ -53,9 +55,36 @@ public class MainWindow extends JFrame {
 
         btnAtualizar.addActionListener(e -> carregarPecas());
 
+        // Detectando a tecla Delete
+        tabela.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE){
+                    excluirPeca();
+                }
+            }
+        });
+
         //Primeira carga
         carregarPecas();
 
+    }
+
+    // Método para exluir uma peça
+    private void excluirPeca(){
+        int row = tabela.getSelectedRow();
+        if(row >= 0){
+            Long id = (Long) tabela.getValueAt(row, 0); // Assumindo que o ID está na primeira coluna
+            int confirm =  JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esta peça?", "Excluir " +
+                    "Peça", JOptionPane.YES_NO_OPTION);
+            if(confirm == JOptionPane.YES_NO_OPTION){
+                pecaService.excluir(id);
+                carregarPecas(); // atualiza a lista
+                JOptionPane.showMessageDialog(this, "Peça excluída com sucesso!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma peça para exluir");
+        }
     }
 
     public void carregarPecas(){
