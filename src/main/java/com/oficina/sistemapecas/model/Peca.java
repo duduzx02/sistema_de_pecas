@@ -14,6 +14,10 @@ public class Peca {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     @NotBlank
     private String nome;
 
