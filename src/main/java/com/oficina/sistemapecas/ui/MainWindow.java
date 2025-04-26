@@ -32,6 +32,7 @@ public class MainWindow extends JFrame {
         tabela = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(tabela);
 
+        tabela.setDefaultEditor(Object.class, null);
         JButton btnNovaPeca = new JButton("Nova Peça");
         JButton btnAtualizar = new JButton("Atualizar Lista");
 
