@@ -27,4 +27,8 @@ public class PecaService {
     public void excluir(Long id){
         pecaRepository.deleteById(id);
     }
+
+    public Peca buscarPorId(Long id){
+       return pecaRepository.findById(id).orElse(null);
+    }
 }
