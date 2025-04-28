@@ -1,6 +1,7 @@
 package com.oficina.sistemapecas.ui;
 
 import com.oficina.sistemapecas.model.Peca;
+import com.oficina.sistemapecas.model.Urgencia;
 import com.oficina.sistemapecas.model.Usuario;
 import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
@@ -17,21 +18,34 @@ import java.util.List;
 @Component
 public class MainWindow extends JFrame {
 
+    // Services (Injetados via Spring)
     private final PecaService pecaService;
     private final UsuarioService usuarioService;
+
+    // Componetes UI
     private final JTable tabela;
     private final DefaultTableModel tableModel;
     private final JComboBox<Usuario> usuarioJComboBox = new JComboBox<>();
+    private final JComboBox<Urgencia> urgenciaJComboBox = new JComboBox<>(Urgencia.values());
+    private final JTextField txtFiltroNome = new JTextField(20);
+    private final JButton btnExportarPDF = new JButton("PDF");
+
+    // Constantes
+    private static final String[] COLUNAS_TABELA = {
+            "ID", "Nome", "Descrição", "Valor", "Urgência", "Responsável"
+    };
+    private static final Color COR_FUNDO = new Color(240, 240, 240);
+    private static final Color COR_BOTAO = new Color(0,120, 215);
+
 
     @Autowired
     public MainWindow(PecaService pecaService, UsuarioService usuarioService){
 
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
-        setTitle("Sistema de peças da oficina");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
+
+        configurarJanela();
+
 
         // Colunas da tabela
         String[] colunas = {"ID", "Nome", "Descrição", "Valor", "Urgência"};
@@ -81,6 +95,14 @@ public class MainWindow extends JFrame {
         carregarPecas();
         carregarUsuarios();
 
+    }
+
+    private void configurarJanela(){
+        setTitle("Sistema de gestão de peças - Oficina mecânica");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setSize(1000,550);
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(COR_FUNDO);
     }
 
     // Método para exluir uma peça
