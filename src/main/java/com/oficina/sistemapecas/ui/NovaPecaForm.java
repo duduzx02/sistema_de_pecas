@@ -119,42 +119,75 @@ public class NovaPecaForm extends JDialog {
 
     // Método para salvar as peças
     private void salvarPeca() {
-        try {
-            String nome = nomeField.getText().trim();
-            String descricao = descricaoField.getText().trim();
-            BigDecimal valor = new BigDecimal(valorField.getText().trim());
-            Urgencia urgencia = (Urgencia) urgenciaJComboBox.getSelectedItem();
+        if(!validarCampos()) return;
 
+       try{
+           Peca peca = new Peca();
+           peca.setNome(nomeField.getText().trim());
+           peca.setDescricao(descricaoField.getText().trim());
+           peca.setValor(new BigDecimal(valorField.getValue().toString()));
+           peca.setUrgencia((Urgencia) urgenciaJComboBox.getSelectedItem());
+           peca.setUsuario((Usuario) usuarioJComboBox.getSelectedItem());
 
-            if (nome.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "O nome não pode estar em branco.");
+           pecaService.salvar(peca);
 
-                return;
-            }
+           JOptionPane.showMessageDialog(this,
+                   "Peça cadastrada com sucesso!",
+                   "Sucesso",
+                   JOptionPane.INFORMATION_MESSAGE);
 
-            Peca peca = new Peca();
-            peca.setNome(nome);
-            peca.setDescricao(descricao);
-            peca.setValor(valor);
-            peca.setUrgencia(urgencia);
-            peca.setUsuario(usuarioSelecionado);
+           parent.carregarPecas();
+           dispose();
+       } catch (Exception ex){
+           JOptionPane.showMessageDialog(this,
+                   "Erro ao salva peça: " + ex.getMessage(),
+                   "Erro",
+                   JOptionPane.ERROR_MESSAGE);
+           ex.printStackTrace();
+       }
 
-
-            pecaService.salvar(peca);
-            JOptionPane.showMessageDialog(this, "Peça salva com sucesso!");
-            parent.carregarPecas();
-            dispose();
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar peça" + ex.getMessage());
-        }
     }
 
-    private void carregarUsuario(){
-        List<Usuario> usuarios = usuarioService.listarTodos();
-        for(Usuario usuario : usuarios){
-            usuarioJComboBox.addItem(usuario);
+    private boolean validarCampos(){
+        // Validação em cascata com mensagens específicas
+        if(nomeField.getText().trim().isEmpty()){
+            showValidationErro("O campo 'Nome' é obrigatório");
+            nomeField.requestFocus();
+            return false;
         }
+
+        if(((Number) valorField.getValue()).doubleValue() <= 0){
+            showValidationErro("O valor deve ser maior que zero");
+            valorField.requestFocus();
+            return false;
+        }
+
+        if (usuarioJComboBox.getSelectedItem() == null) {
+            showValidationErro("Selecione um responsável");
+            usuarioJComboBox.requestFocus();
+            return false;
+        }
+
+        return true;
+
+    }
+
+    private void showValidationErro(String message){
+        JOptionPane.showMessageDialog(this,
+                message,
+                "Validação",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+
+
+    private void carregarUsuario(){
+        SwingUtilities.invokeLater(() -> {
+            usuarioJComboBox.removeAll();
+            List<Usuario> usuarios = usuarioService.listarTodos();
+            usuarios.forEach(usuarioJComboBox::addItem);
+
+        });
     }
 
 }
