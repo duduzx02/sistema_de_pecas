@@ -2,6 +2,7 @@ package com.oficina.sistemapecas.ui;
 
 import com.oficina.sistemapecas.model.Peca;
 import com.oficina.sistemapecas.service.PecaService;
+import com.oficina.sistemapecas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +17,15 @@ import java.util.List;
 public class MainWindow extends JFrame {
 
     private final PecaService pecaService;
+    private final UsuarioService usuarioService;
     private final JTable tabela;
     private final DefaultTableModel tableModel;
 
     @Autowired
-    public MainWindow(PecaService pecaService){
+    public MainWindow(PecaService pecaService, UsuarioService usuarioService){
 
         this.pecaService = pecaService;
+        this.usuarioService = usuarioService;
         setTitle("Sistema de peças da oficina");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -49,7 +52,7 @@ public class MainWindow extends JFrame {
 
         // Ações dos botões
         btnNovaPeca.addActionListener(e -> {
-            NovaPecaForm form = new NovaPecaForm(this, pecaService);
+            NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
             form.setVisible(true);
         });
 
