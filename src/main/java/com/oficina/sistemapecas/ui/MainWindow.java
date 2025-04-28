@@ -1,6 +1,7 @@
 package com.oficina.sistemapecas.ui;
 
 import com.oficina.sistemapecas.model.Peca;
+import com.oficina.sistemapecas.model.Usuario;
 import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class MainWindow extends JFrame {
     private final UsuarioService usuarioService;
     private final JTable tabela;
     private final DefaultTableModel tableModel;
+    private final JComboBox<Usuario> usuarioJComboBox = new JComboBox<>();
 
     @Autowired
     public MainWindow(PecaService pecaService, UsuarioService usuarioService){
@@ -47,11 +49,17 @@ public class MainWindow extends JFrame {
         painelBotoes.add(btnAtualizar);
 
         // Layout
+        add(usuarioJComboBox, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(painelBotoes, BorderLayout.SOUTH);
 
         // Ações dos botões
         btnNovaPeca.addActionListener(e -> {
+            Usuario usuario = (Usuario) usuarioJComboBox.getSelectedItem();
+            if(usuario == null){
+                JOptionPane.showMessageDialog(this, "Selecione um usuário primeiro!");
+                return;
+            }
             NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
             form.setVisible(true);
         });
@@ -70,6 +78,7 @@ public class MainWindow extends JFrame {
 
         //Primeira carga
         carregarPecas();
+        carregarUsuarios();
 
     }
 
@@ -98,7 +107,13 @@ public class MainWindow extends JFrame {
                     p.getId(), p.getNome(), p.getDescricao(), p.getValor(), p.getUrgencia()
             });
         }
+    }
 
+    private void carregarUsuarios(){
+        List<Usuario> usuarios = usuarioService.listarTodos();
+        for(Usuario usuario : usuarios){
+            usuarioJComboBox.addItem(usuario);
+        }
     }
 
     public void exibir(){

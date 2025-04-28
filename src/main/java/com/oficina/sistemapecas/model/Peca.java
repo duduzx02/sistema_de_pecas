@@ -27,6 +27,14 @@ public class Peca {
     @DecimalMin("0.00")
     private BigDecimal valor;
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private Urgencia urgencia;

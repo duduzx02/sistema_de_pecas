@@ -23,6 +23,7 @@ public class NovaPecaForm extends JDialog {
     private final UsuarioService usuarioService;
     private final MainWindow parent;
 
+    Usuario usuarioSelecionado = (Usuario) usuarioJComboBox.getSelectedItem();
 
     // Construtorr que configura o diálogo
     public NovaPecaForm(MainWindow parent, PecaService pecaService, UsuarioService usuarioService) {
@@ -85,6 +86,8 @@ public class NovaPecaForm extends JDialog {
             peca.setDescricao(descricao);
             peca.setValor(valor);
             peca.setUrgencia(urgencia);
+            peca.setUsuario(usuarioSelecionado);
+
 
             pecaService.salvar(peca);
             JOptionPane.showMessageDialog(this, "Peça salva com sucesso!");
