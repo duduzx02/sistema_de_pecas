@@ -56,10 +56,11 @@ public class MainWindow extends JFrame {
         // Ações dos botões
         btnNovaPeca.addActionListener(e -> {
             Usuario usuario = (Usuario) usuarioJComboBox.getSelectedItem();
-            if(usuario == null){
+          /*  if(usuario == null){
                 JOptionPane.showMessageDialog(this, "Selecione um usuário primeiro!");
                 return;
-            }
+            }*/
+
             NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
             form.setVisible(true);
         });
