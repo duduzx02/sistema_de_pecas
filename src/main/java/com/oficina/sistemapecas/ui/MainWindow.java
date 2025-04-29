@@ -103,6 +103,24 @@ public class MainWindow extends JFrame {
         setLayout(new BorderLayout(15, 15));
     }
 
+    private JPanel criarPainelFiltros(){
+        JPanel painel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        painel.setBorder(BorderFactory.createTitledBorder("Filtrar"));
+
+        // Componentes
+        JLabel IblUsuarios = new JLabel("Responsável: ");
+        cbUsuarios.setPreferredSize(new Dimension(200, 25));
+
+        // adiciona ao painel
+        painel.add(IblUsuarios);
+        painel.add(cbUsuarios);
+
+        return painel;
+    }
+
+
+
+
     // Método para exluir uma peça
     private void excluirPeca(){
         int row = tabela.getSelectedRow();
