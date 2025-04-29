@@ -162,11 +162,11 @@ public class NovaPecaForm extends JDialog {
             return false;
         }
 
-        if (usuarioJComboBox.getSelectedItem() == null) {
+      /*  if (usuarioJComboBox.getSelectedItem() == null) {
             showValidationErro("Selecione um responsável");
             usuarioJComboBox.requestFocus();
             return false;
-        }
+        }*/
 
         return true;
 

@@ -1,7 +1,6 @@
 package com.oficina.sistemapecas.ui;
 
 import com.oficina.sistemapecas.model.Peca;
-import com.oficina.sistemapecas.model.Urgencia;
 import com.oficina.sistemapecas.model.Usuario;
 import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
@@ -25,10 +24,7 @@ public class MainWindow extends JFrame {
     // Componetes UI
     private final JTable tabela;
     private final DefaultTableModel tableModel;
-    private final JComboBox<Usuario> usuarioJComboBox = new JComboBox<>();
-    private final JComboBox<Urgencia> urgenciaJComboBox = new JComboBox<>(Urgencia.values());
-    private final JTextField txtFiltroNome = new JTextField(20);
-    private final JButton btnExportarPDF = new JButton("PDF");
+    private final JComboBox<Usuario> cbUsuarios = new JComboBox<>();
 
     // Constantes
     private static final String[] COLUNAS_TABELA = {
@@ -63,13 +59,13 @@ public class MainWindow extends JFrame {
         painelBotoes.add(btnAtualizar);
 
         // Layout
-        add(usuarioJComboBox, BorderLayout.NORTH);
+        add(cbUsuarios, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(painelBotoes, BorderLayout.SOUTH);
 
         // Ações dos botões
         btnNovaPeca.addActionListener(e -> {
-            Usuario usuario = (Usuario) usuarioJComboBox.getSelectedItem();
+            Usuario usuario = (Usuario) cbUsuarios.getSelectedItem();
           /*  if(usuario == null){
                 JOptionPane.showMessageDialog(this, "Selecione um usuário primeiro!");
                 return;
@@ -103,6 +99,8 @@ public class MainWindow extends JFrame {
         setSize(1000,550);
         setLocationRelativeTo(null);
         getContentPane().setBackground(COR_FUNDO);
+
+        setLayout(new BorderLayout(15, 15));
     }
 
     // Método para exluir uma peça
@@ -135,7 +133,7 @@ public class MainWindow extends JFrame {
     private void carregarUsuarios(){
         List<Usuario> usuarios = usuarioService.listarTodos();
         for(Usuario usuario : usuarios){
-            usuarioJComboBox.addItem(usuario);
+            cbUsuarios.addItem(usuario);
         }
     }
 
