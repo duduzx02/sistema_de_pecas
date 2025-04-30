@@ -31,28 +31,15 @@ public class MainWindow extends JFrame {
     private static final String[] COLUNAS_TABELA = {
             "ID", "Nome", "Descrição", "Valor", "Urgência", "Responsável"
     };
-<<<<<<< HEAD
-=======
-    private static final Color COR_FUNDO = new Color(240, 240, 240);
->>>>>>> 3cf3358b09c1dae97ce9943786df45aa81a9473a
 
     private static final Color COR_FUNDO = new Color(240, 240, 240);
     private static final NumberFormat FORMATO_MOEDA = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
     @Autowired
-<<<<<<< HEAD
     public MainWindow(PecaService pecaService, UsuarioService usuarioService) {
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
 
-=======
-    public MainWindow(PecaService pecaService, UsuarioService usuarioService){
-
-        this.pecaService = pecaService;
-        this.usuarioService = usuarioService;
-
-        // Colunas da tabela
->>>>>>> 3cf3358b09c1dae97ce9943786df45aa81a9473a
         tableModel = new DefaultTableModel(COLUNAS_TABELA, 0);
         tabela = criarTabela();
 
@@ -61,43 +48,9 @@ public class MainWindow extends JFrame {
 
     private void inicializarComponentes() {
         configurarJanela();
-<<<<<<< HEAD
         add(criarPainelFiltros(), BorderLayout.NORTH);
         add(new JScrollPane(tabela), BorderLayout.CENTER);
         add(criarPainelBotoes(), BorderLayout.SOUTH);
-=======
-
-        // Ações dos botões
-
-        tabela.setDefaultEditor(Object.class, null);
-        JButton btnNovaPeca = criarBotao("Nova Peça", this::abrirFormularioNovaPeca);
-        JButton btnAtualizar = criarBotao("Atualizar Lista", this::carregarPecas);
-        JButton btnNovoUsuario = criarBotao("Novo Usuário", this::abrirFormularioNovoUsuario);
-
-
-        // Painel de botões
-        JPanel painelBotoes = new JPanel();
-        painelBotoes.add(btnNovaPeca);
-        painelBotoes.add(btnAtualizar);
-        painelBotoes.add(btnNovoUsuario);
-
-        // Layout
-        add(criarPainelFiltros(), BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(painelBotoes, BorderLayout.SOUTH);
-
-        // Detectando a tecla Delete
-        tabela.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DELETE){
-                    excluirPeca();
-                }
-            }
-        });
-
-        //Primeira carga
->>>>>>> 3cf3358b09c1dae97ce9943786df45aa81a9473a
 
         configurarEventosTeclado();
         carregarUsuarios();
@@ -107,33 +60,10 @@ public class MainWindow extends JFrame {
         cbUsuarios.addActionListener(e -> carregarPecas());
     }
 
-<<<<<<< HEAD
     private void configurarJanela() {
         setTitle("Sistema de Gestão de Peças - Oficina Mecânica");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1000, 550);
-=======
-    private void abrirFormularioNovoUsuario(){
-        NovoUsuarioForm form = new NovoUsuarioForm(this, usuarioService);
-        form.setVisible(true);
-    }
-
-    private void abrirFormularioNovaPeca(){
-        Usuario usuario = (Usuario) cbUsuarios.getSelectedItem();
-        if(usuario == null){
-            mostrarMensagem("Selecione um usuário primeiro!");
-            return;
-        }
-
-        NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
-        form.setVisible(true);
-    }
-
-    private void configurarJanela(){
-        setTitle("Sistema de gestão de peças - Oficina mecânica");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(1000,550);
->>>>>>> 3cf3358b09c1dae97ce9943786df45aa81a9473a
         setLocationRelativeTo(null);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout(15, 15));
@@ -259,18 +189,7 @@ public class MainWindow extends JFrame {
         carregarUsuarios();
     }
 
-<<<<<<< HEAD
     private void mostrarMensagem(String mensagem) {
-=======
-    private JButton criarBotao(String texto, Runnable acao){
-        JButton botao = new JButton(texto);
-        botao.addActionListener(e -> acao.run());
-        return botao;
-    }
-
-
-    private void mostrarMensagem(String mensagem){
->>>>>>> 3cf3358b09c1dae97ce9943786df45aa81a9473a
         JOptionPane.showMessageDialog(this, mensagem);
     }
 
