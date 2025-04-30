@@ -36,16 +36,13 @@ public class MainWindow extends JFrame {
             "ID", "Nome", "Descrição", "Valor", "Urgência", "Responsável"
     };
     private static final Color COR_FUNDO = new Color(240, 240, 240);
-    private static final Color COR_BOTAO = new Color(0,120, 215);
 
 
     @Autowired
     public MainWindow(PecaService pecaService, UsuarioService usuarioService){
 
-
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
-
 
         // Colunas da tabela
         tableModel = new DefaultTableModel(COLUNAS_TABELA, 0);
@@ -54,10 +51,13 @@ public class MainWindow extends JFrame {
 
         configurarJanela();
 
+        // Ações dos botões
+
         tabela.setDefaultEditor(Object.class, null);
-        JButton btnNovaPeca = new JButton("Nova Peça");
-        JButton btnAtualizar = new JButton("Atualizar Lista");
-        JButton btnNovoUsuario = new JButton("Novo Usuário");
+        JButton btnNovaPeca = criarBotao("Nova Peça", this::abrirFormularioNovaPeca);
+        JButton btnAtualizar = criarBotao("Atualizar Lista", this::carregarPecas);
+        JButton btnNovoUsuario = criarBotao("Novo Usuário", this::abrirFormularioNovoUsuario);
+
 
         // Painel de botões
         JPanel painelBotoes = new JPanel();
@@ -69,25 +69,6 @@ public class MainWindow extends JFrame {
         add(criarPainelFiltros(), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(painelBotoes, BorderLayout.SOUTH);
-
-        // Ações dos botões
-        btnNovaPeca.addActionListener(e -> {
-            Usuario usuario = (Usuario) cbUsuarios.getSelectedItem();
-            if(usuario == null){
-                mostrarMensagem("Selecione um usuário primeiro!");
-                return;
-            }
-
-            NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
-            form.setVisible(true);
-        });
-
-        btnAtualizar.addActionListener(e -> carregarPecas());
-
-        btnNovoUsuario.addActionListener(e -> {
-            NovoUsuarioForm form = new NovoUsuarioForm(this, usuarioService);
-            form.setVisible(true);
-        });
 
         // Detectando a tecla Delete
         tabela.addKeyListener(new KeyAdapter() {
@@ -104,6 +85,22 @@ public class MainWindow extends JFrame {
         carregarUsuarios();
         carregarPecas();
 
+    }
+
+    private void abrirFormularioNovoUsuario(){
+        NovoUsuarioForm form = new NovoUsuarioForm(this, usuarioService);
+        form.setVisible(true);
+    }
+
+    private void abrirFormularioNovaPeca(){
+        Usuario usuario = (Usuario) cbUsuarios.getSelectedItem();
+        if(usuario == null){
+            mostrarMensagem("Selecione um usuário primeiro!");
+            return;
+        }
+
+        NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
+        form.setVisible(true);
     }
 
     private void configurarJanela(){
@@ -196,6 +193,13 @@ public class MainWindow extends JFrame {
         cbUsuarios.removeAll();
         carregarUsuarios();
     }
+
+    private JButton criarBotao(String texto, Runnable acao){
+        JButton botao = new JButton(texto);
+        botao.addActionListener(e -> acao.run());
+        return botao;
+    }
+
 
     private void mostrarMensagem(String mensagem){
         JOptionPane.showMessageDialog(this, mensagem);
