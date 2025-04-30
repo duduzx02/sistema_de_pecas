@@ -123,7 +123,7 @@ public class MainWindow extends JFrame {
             return;
         }
 
-        NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
+        NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService, usuario);
         form.setVisible(true);
     }
 

@@ -19,24 +19,26 @@ import java.util.Locale;
 
 public class NovaPecaForm extends JDialog {
 
+    private final Usuario usuarioSelecionado;
     private final JTextField nomeField = new JTextField(20);
     private final JTextField descricaoField = new JTextField(20);
     private final JFormattedTextField valorField = criarCampoValor();
     private final JComboBox<Urgencia> urgenciaJComboBox = new JComboBox<>(Urgencia.values());
-    private final JComboBox<Usuario> usuarioJComboBox = new JComboBox<>();
+
 
     private final PecaService pecaService;
     private final UsuarioService usuarioService;
     private final MainWindow parent;
 
-    public NovaPecaForm(MainWindow parent, PecaService pecaService, UsuarioService usuarioService) {
+    public NovaPecaForm(MainWindow parent, PecaService pecaService, UsuarioService usuarioService, Usuario usuarioSelecionado) {
         super(parent, "Cadastro de Nova Peça", true);
         this.parent = parent;
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
+        this.usuarioSelecionado = usuarioSelecionado;
 
         initComponents();
-        carregarUsuarios();
+
     }
 
     private void initComponents() {
@@ -62,7 +64,6 @@ public class NovaPecaForm extends JDialog {
         addCampoFormulario(panel, gbc, 1, "Descrição:", descricaoField);
         addCampoFormulario(panel, gbc, 2, "Valor (R$):", valorField);
         addCampoFormulario(panel, gbc, 3, "Urgência:", urgenciaJComboBox);
-        addCampoFormulario(panel, gbc, 4, "Responsável:", usuarioJComboBox);
 
         return panel;
     }
@@ -152,13 +153,6 @@ public class NovaPecaForm extends JDialog {
         return (JButton) buttonPanel.getComponent(1);
     }
 
-    private void carregarUsuarios() {
-        SwingUtilities.invokeLater(() -> {
-            usuarioJComboBox.removeAllItems();
-            List<Usuario> usuarios = usuarioService.listarTodos();
-            usuarios.forEach(usuarioJComboBox::addItem);
-        });
-    }
 
     private void salvarPeca() {
         if (!validarCampos()) return;
@@ -169,7 +163,7 @@ public class NovaPecaForm extends JDialog {
             peca.setDescricao(descricaoField.getText().trim());
             peca.setValor(new BigDecimal(valorField.getValue().toString()));
             peca.setUrgencia((Urgencia) urgenciaJComboBox.getSelectedItem());
-            peca.setUsuario((Usuario) usuarioJComboBox.getSelectedItem());
+            peca.setUsuario(usuarioSelecionado);
 
             pecaService.salvar(peca);
 
