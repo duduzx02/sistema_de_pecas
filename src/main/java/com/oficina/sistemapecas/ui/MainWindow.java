@@ -4,6 +4,7 @@ import com.oficina.sistemapecas.model.Peca;
 import com.oficina.sistemapecas.model.Usuario;
 import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
+import com.oficina.sistemapecas.ui.renderer.UrgenciaRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,8 +41,6 @@ public class MainWindow extends JFrame {
 
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
-
-        configurarJanela();
 
 
         // Colunas da tabela
@@ -89,8 +88,13 @@ public class MainWindow extends JFrame {
         });
 
         //Primeira carga
+        configurarJanela();
         carregarPecas();
         carregarUsuarios();
+
+
+
+
 
     }
 
@@ -102,6 +106,8 @@ public class MainWindow extends JFrame {
         getContentPane().setBackground(COR_FUNDO);
 
         setLayout(new BorderLayout(15, 15));
+
+        tabela.getColumnModel().getColumn(4).setCellRenderer(new UrgenciaRenderer());
     }
 
     private JPanel criarPainelFiltros(){
