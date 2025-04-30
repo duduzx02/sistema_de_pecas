@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.List;
 
 @Component
@@ -45,8 +48,8 @@ public class MainWindow extends JFrame {
 
         // Colunas da tabela
         String[] colunas = {"ID", "Nome", "Descrição", "Valor", "Urgência"};
-        tableModel = new DefaultTableModel(colunas, 0);
-        tabela = new JTable(tableModel);
+        tableModel = new DefaultTableModel(COLUNAS_TABELA, 0);
+        tabela = criarTabela();
         JScrollPane scrollPane = new JScrollPane(tabela);
 
         tabela.setDefaultEditor(Object.class, null);
@@ -118,7 +121,22 @@ public class MainWindow extends JFrame {
         return painel;
     }
 
+    private JTable criarTabela(){
 
+        // Cria a tabela
+        JTable tabela = new JTable(tableModel);
+
+        // Configuração de edição
+        tabela.setDefaultEditor(Object.class, null); // Impede edição
+
+        // Configurações visuais
+        tabela.setGridColor(Color.black);
+        tabela.setRowHeight(30);
+        tabela.setIntercellSpacing(new Dimension(0 ,5));
+        tabela.setAutoCreateRowSorter(true);
+        tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return tabela;
+    }
 
 
     // Método para exluir uma peça
