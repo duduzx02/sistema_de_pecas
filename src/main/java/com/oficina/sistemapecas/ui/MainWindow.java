@@ -133,6 +133,8 @@ public class MainWindow extends JFrame {
         tabela.setGridColor(Color.black);
         tabela.setRowHeight(30);
         tabela.setIntercellSpacing(new Dimension(0 ,5));
+
+        // Funcionalidades
         tabela.setAutoCreateRowSorter(true);
         tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return tabela;
@@ -146,7 +148,7 @@ public class MainWindow extends JFrame {
             Long id = (Long) tabela.getValueAt(row, 0); // Assumindo que o ID está na primeira coluna
             int confirm =  JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esta peça?", "Excluir " +
                     "Peça", JOptionPane.YES_NO_OPTION);
-            if(confirm == JOptionPane.YES_NO_OPTION){
+            if(confirm == JOptionPane.YES_OPTION){
                 pecaService.excluir(id);
                 carregarPecas(); // atualiza a lista
                 JOptionPane.showMessageDialog(this, "Peça excluída com sucesso!");
