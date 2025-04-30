@@ -178,7 +178,6 @@ public class MainWindow extends JFrame {
     private void carregarUsuarios() {
         cbUsuarios.removeAllItems();
 
-        // Adiciona opção de "Todos"
 
         List<Usuario> usuarios = usuarioService.listarTodos();
         for (Usuario usuario : usuarios) {

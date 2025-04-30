@@ -7,16 +7,14 @@ import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
 
 import javax.swing.*;
-import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.List;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class NovaPecaForm extends JDialog {
@@ -31,119 +29,113 @@ public class NovaPecaForm extends JDialog {
     private final UsuarioService usuarioService;
     private final MainWindow parent;
 
-
-    // Construtorr que configura o diálogo
     public NovaPecaForm(MainWindow parent, PecaService pecaService, UsuarioService usuarioService) {
         super(parent, "Cadastro de Nova Peça", true);
         this.parent = parent;
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
 
-        configureUI();
-        carregarUsuario();
-
+        initComponents();
+        carregarUsuarios();
     }
 
-    private void configureUI(){
+    private void initComponents() {
         setLayout(new BorderLayout(10, 10));
         setSize(500, 350);
         setLocationRelativeTo(parent);
         setResizable(false);
 
-        // Configurarção do campo de valor monetário
+        JPanel formPanel = criarPainelFormulario();
+        JPanel buttonPanel = criarPainelBotoes();
 
+        add(formPanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
+        configurarAtalhosTeclado();
+    }
 
-        valorField.setColumns(10);
-        valorField.setValue(BigDecimal.ZERO);
+    private JPanel criarPainelFormulario() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = criarConstraintsPadrao();
 
-        // Painel de formulário com GridBagLayout
-        JPanel formPanel = new JPanel(new GridBagLayout());
+        addCampoFormulario(panel, gbc, 0, "Nome:", nomeField);
+        addCampoFormulario(panel, gbc, 1, "Descrição:", descricaoField);
+        addCampoFormulario(panel, gbc, 2, "Valor (R$):", valorField);
+        addCampoFormulario(panel, gbc, 3, "Urgência:", urgenciaJComboBox);
+        addCampoFormulario(panel, gbc, 4, "Responsável:", usuarioJComboBox);
+
+        return panel;
+    }
+
+    private GridBagConstraints criarConstraintsPadrao() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Adiconando componentes com alinhamento consistente
-        addFormField(formPanel, gbc, 0, "Nome: ", nomeField);
-        addFormField(formPanel, gbc, 1, "Descrição:", descricaoField);
-        addFormField(formPanel, gbc, 2, "Valor (R$):", valorField);
-        addFormField(formPanel, gbc, 3, "Urgência:", urgenciaJComboBox);
-        addFormField(formPanel, gbc, 4, "Responsável:", usuarioJComboBox);
-
-        // Painel de botões com flowLayout
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10 ,10));
-        JButton btnSalvar = createButton("Salvar", this::salvarPeca, Color.GREEN.darker());
-        JButton btnCancelar = createButton("Cancelar", this::dispose, Color.RED.darker());
-
-        buttonPanel.add(btnCancelar);
-        buttonPanel.add(btnSalvar);
-
-        // Adicionando componetes ao diálogo
-        add(formPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        // Comportamento padrão do Enter/ESC
-        configureKeyboardActions();
+        return gbc;
     }
 
-    private JFormattedTextField criarCampoValor() {
-
-            NumberFormat formato = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
-
-            // Congiurar para sempre mostrar 2 casas decimais
-            formato.setMaximumFractionDigits(2);
-            formato.setMinimumFractionDigits(2);
-            formato.setGroupingUsed(false);
-
-        // Usar NumberFormatter para melhor controle
-            NumberFormatter formatter = new NumberFormatter(formato);
-            formatter.setValueClass(BigDecimal.class);  // Aceitará apenas BigDecimal
-            formatter.setAllowsInvalid(false);          // Não permite valores inválidos
-            formatter.setMinimum(BigDecimal.ZERO);      // Valor mínimo zero
-
-            JFormattedTextField field = new JFormattedTextField(formato);
-            field.setColumns(10);
-            field.setValue(BigDecimal.ZERO);
-
-            field.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    SwingUtilities.invokeLater(() -> {
-                        field.selectAll();
-                    });
-                }
-            });
-
-            return field;
-
+    private JPanel criarPainelBotoes() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        panel.add(criarBotao("Cancelar", this::dispose, Color.RED.darker()));
+        panel.add(criarBotao("Salvar", this::salvarPeca, Color.GREEN.darker()));
+        return panel;
     }
 
-    // Métodos Auxiliares
-
-    private void addFormField(JPanel panel, GridBagConstraints gbc, int row, String label, JComponent field){
+    private void addCampoFormulario(JPanel panel, GridBagConstraints gbc, int row, String label, JComponent campo) {
         gbc.gridx = 0;
         gbc.gridy = row;
         panel.add(new JLabel(label), gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 1.0;
-        panel.add(field, gbc);
+        panel.add(campo, gbc);
     }
 
-    private JButton createButton(String text, Runnable action, Color bgColor){
-        JButton button = new JButton(text);
-        button.addActionListener(e -> action.run());
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        return button;
+    private JButton criarBotao(String texto, Runnable acao, Color corFundo) {
+        JButton botao = new JButton(texto);
+        botao.addActionListener(e -> acao.run());
+        botao.setBackground(corFundo);
+        botao.setForeground(Color.WHITE);
+        botao.setFocusPainted(false);
+        return botao;
     }
 
-    private void configureKeyboardActions(){
-        // Enter salvar, ESQ = Cancelar
-        JRootPane rootPane = this.getRootPane();
-        rootPane.setDefaultButton((JButton) ((JPanel) getContentPane().getComponent(1)).getComponent(1));
+    private JFormattedTextField criarCampoValor() {
+
+        NumberFormat formato = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+
+        // Congiurar para sempre mostrar 2 casas decimais
+        formato.setMaximumFractionDigits(2);
+        formato.setMinimumFractionDigits(2);
+        formato.setGroupingUsed(false);
+
+        // Usar NumberFormatter para melhor controle
+        NumberFormatter formatter = new NumberFormatter(formato);
+        formatter.setValueClass(BigDecimal.class);  // Aceitará apenas BigDecimal
+        formatter.setAllowsInvalid(false);          // Não permite valores inválidos
+        formatter.setMinimum(BigDecimal.ZERO);      // Valor mínimo zero
+
+        JFormattedTextField field = new JFormattedTextField(formato);
+        field.setColumns(10);
+        field.setValue(BigDecimal.ZERO);
+
+        field.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    field.selectAll();
+                });
+            }
+        });
+
+        return field;
+
+    }
+
+    private void configurarAtalhosTeclado() {
+        JRootPane rootPane = getRootPane();
+        rootPane.setDefaultButton(getBotaoSalvar());
 
         InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         inputMap.put(KeyStroke.getKeyStroke("ESCAPE"), "cancel");
@@ -155,79 +147,67 @@ public class NovaPecaForm extends JDialog {
         });
     }
 
-    // Lógica de negocio
-
-    // Método para salvar as peças
-    private void salvarPeca() {
-        if(!validarCampos()) return;
-
-       try{
-           Peca peca = new Peca();
-           peca.setNome(nomeField.getText().trim());
-           peca.setDescricao(descricaoField.getText().trim());
-           peca.setValor(new BigDecimal(valorField.getValue().toString()));
-           peca.setUrgencia((Urgencia) urgenciaJComboBox.getSelectedItem());
-           peca.setUsuario((Usuario) usuarioJComboBox.getSelectedItem());
-
-           pecaService.salvar(peca);
-
-           JOptionPane.showMessageDialog(this,
-                   "Peça cadastrada com sucesso!",
-                   "Sucesso",
-                   JOptionPane.INFORMATION_MESSAGE);
-
-           parent.carregarPecas();
-           dispose();
-       } catch (Exception ex){
-           JOptionPane.showMessageDialog(this,
-                   "Erro ao salva peça: " + ex.getMessage(),
-                   "Erro",
-                   JOptionPane.ERROR_MESSAGE);
-           ex.printStackTrace();
-       }
-
+    private JButton getBotaoSalvar() {
+        JPanel buttonPanel = (JPanel) getContentPane().getComponent(1);
+        return (JButton) buttonPanel.getComponent(1);
     }
 
-    private boolean validarCampos(){
-        // Validação em cascata com mensagens específicas
-        if(nomeField.getText().trim().isEmpty()){
-            showValidationErro("O campo 'Nome' é obrigatório");
+    private void carregarUsuarios() {
+        SwingUtilities.invokeLater(() -> {
+            usuarioJComboBox.removeAllItems();
+            List<Usuario> usuarios = usuarioService.listarTodos();
+            usuarios.forEach(usuarioJComboBox::addItem);
+        });
+    }
+
+    private void salvarPeca() {
+        if (!validarCampos()) return;
+
+        try {
+            Peca peca = new Peca();
+            peca.setNome(nomeField.getText().trim());
+            peca.setDescricao(descricaoField.getText().trim());
+            peca.setValor(new BigDecimal(valorField.getValue().toString()));
+            peca.setUrgencia((Urgencia) urgenciaJComboBox.getSelectedItem());
+            peca.setUsuario((Usuario) usuarioJComboBox.getSelectedItem());
+
+            pecaService.salvar(peca);
+
+            JOptionPane.showMessageDialog(this, "Peça cadastrada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            parent.carregarPecas();
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar peça: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+
+    private boolean validarCampos() {
+        if (nomeField.getText().trim().isEmpty()) {
+            mostrarErroValidacao("O campo 'Nome' é obrigatório");
             nomeField.requestFocus();
             return false;
         }
 
-        if(((Number) valorField.getValue()).doubleValue() <= 0){
-            showValidationErro("O valor deve ser maior que zero");
+        if (((Number) valorField.getValue()).doubleValue() <= 0) {
+            mostrarErroValidacao("O valor deve ser maior que zero");
             valorField.requestFocus();
             return false;
         }
 
-      /*  if (usuarioJComboBox.getSelectedItem() == null) {
-            showValidationErro("Selecione um responsável");
+        // Se quiser reativar a validação do usuário:
+        /*
+        if (usuarioJComboBox.getSelectedItem() == null) {
+            mostrarErroValidacao("Selecione um responsável");
             usuarioJComboBox.requestFocus();
             return false;
-        }*/
+        }
+        */
 
         return true;
-
     }
 
-    private void showValidationErro(String message){
-        JOptionPane.showMessageDialog(this,
-                message,
-                "Validação",
-                JOptionPane.WARNING_MESSAGE);
+    private void mostrarErroValidacao(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, "Validação", JOptionPane.WARNING_MESSAGE);
     }
-
-
-
-    private void carregarUsuario(){
-        SwingUtilities.invokeLater(() -> {
-            usuarioJComboBox.removeAll();
-            List<Usuario> usuarios = usuarioService.listarTodos();
-            usuarios.forEach(usuarioJComboBox::addItem);
-
-        });
-    }
-
 }
