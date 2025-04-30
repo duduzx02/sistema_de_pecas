@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
+
 import java.util.List;
 
 @Component
@@ -62,7 +60,7 @@ public class MainWindow extends JFrame {
         painelBotoes.add(btnAtualizar);
 
         // Layout
-        add(cbUsuarios, BorderLayout.NORTH);
+        add(criarPainelFiltros(), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(painelBotoes, BorderLayout.SOUTH);
 
