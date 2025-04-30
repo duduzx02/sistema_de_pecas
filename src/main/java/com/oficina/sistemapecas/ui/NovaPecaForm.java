@@ -7,17 +7,23 @@ import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public class NovaPecaForm extends JDialog {
 
     private final JTextField nomeField = new JTextField(20);
     private final JTextField descricaoField = new JTextField(20);
-    private final JFormattedTextField valorField = new JFormattedTextField(NumberFormat.getCurrencyInstance());
+    private final JFormattedTextField valorField = criarCampoValor();
     private final JComboBox<Urgencia> urgenciaJComboBox = new JComboBox<>(Urgencia.values());
     private final JComboBox<Usuario> usuarioJComboBox = new JComboBox<>();
 
@@ -45,6 +51,9 @@ public class NovaPecaForm extends JDialog {
         setResizable(false);
 
         // Configurarção do campo de valor monetário
+
+
+
         valorField.setColumns(10);
         valorField.setValue(BigDecimal.ZERO);
 
@@ -76,6 +85,38 @@ public class NovaPecaForm extends JDialog {
 
         // Comportamento padrão do Enter/ESC
         configureKeyboardActions();
+    }
+
+    private JFormattedTextField criarCampoValor() {
+
+            NumberFormat formato = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+
+            // Congiurar para sempre mostrar 2 casas decimais
+            formato.setMaximumFractionDigits(2);
+            formato.setMinimumFractionDigits(2);
+            formato.setGroupingUsed(false);
+
+        // Usar NumberFormatter para melhor controle
+            NumberFormatter formatter = new NumberFormatter(formato);
+            formatter.setValueClass(BigDecimal.class);  // Aceitará apenas BigDecimal
+            formatter.setAllowsInvalid(false);          // Não permite valores inválidos
+            formatter.setMinimum(BigDecimal.ZERO);      // Valor mínimo zero
+
+            JFormattedTextField field = new JFormattedTextField(formato);
+            field.setColumns(10);
+            field.setValue(BigDecimal.ZERO);
+
+            field.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    SwingUtilities.invokeLater(() -> {
+                        field.selectAll();
+                    });
+                }
+            });
+
+            return field;
+
     }
 
     // Métodos Auxiliares
