@@ -4,6 +4,7 @@ import com.oficina.sistemapecas.model.Peca;
 import com.oficina.sistemapecas.model.Usuario;
 import com.oficina.sistemapecas.service.PecaService;
 import com.oficina.sistemapecas.service.UsuarioService;
+
 import com.oficina.sistemapecas.ui.renderer.UrgenciaRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,8 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.List;
 
 @Component
@@ -39,15 +42,17 @@ public class MainWindow extends JFrame {
     @Autowired
     public MainWindow(PecaService pecaService, UsuarioService usuarioService){
 
+
         this.pecaService = pecaService;
         this.usuarioService = usuarioService;
 
 
         // Colunas da tabela
-        String[] colunas = {"ID", "Nome", "Descrição", "Valor", "Urgência"};
         tableModel = new DefaultTableModel(COLUNAS_TABELA, 0);
         tabela = criarTabela();
         JScrollPane scrollPane = new JScrollPane(tabela);
+
+        configurarJanela();
 
         tabela.setDefaultEditor(Object.class, null);
         JButton btnNovaPeca = new JButton("Nova Peça");
@@ -66,10 +71,10 @@ public class MainWindow extends JFrame {
         // Ações dos botões
         btnNovaPeca.addActionListener(e -> {
             Usuario usuario = (Usuario) cbUsuarios.getSelectedItem();
-          /*  if(usuario == null){
-                JOptionPane.showMessageDialog(this, "Selecione um usuário primeiro!");
+            if(usuario == null){
+                mostrarMensagem("Selecione um usuário primeiro!");
                 return;
-            }*/
+            }
 
             NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService);
             form.setVisible(true);
@@ -88,13 +93,9 @@ public class MainWindow extends JFrame {
         });
 
         //Primeira carga
-        configurarJanela();
-        carregarPecas();
+
         carregarUsuarios();
-
-
-
-
+        carregarPecas();
 
     }
 
@@ -167,7 +168,12 @@ public class MainWindow extends JFrame {
         List<Peca> pecas = pecaService.listarTodas();
         for (Peca p : pecas){
             tableModel.addRow(new Object[]{
-                    p.getId(), p.getNome(), p.getDescricao(), p.getValor(), p.getUrgencia()
+                    p.getId(),
+                    p.getNome(),
+                    p.getDescricao(),
+                    formatarValor(p.getValor()),
+                    p.getUrgencia(),
+                    p.getUsuario() != null ? p.getUsuario().getNome() : "-"
             });
         }
     }
@@ -177,6 +183,15 @@ public class MainWindow extends JFrame {
         for(Usuario usuario : usuarios){
             cbUsuarios.addItem(usuario);
         }
+    }
+
+    private void mostrarMensagem(String mensagem){
+        JOptionPane.showMessageDialog(this, mensagem);
+    }
+
+
+    private String formatarValor(BigDecimal valor){
+        return NumberFormat.getCurrencyInstance().format(valor);
     }
 
     public void exibir(){

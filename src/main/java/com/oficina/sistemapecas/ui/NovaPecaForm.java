@@ -25,7 +25,6 @@ public class NovaPecaForm extends JDialog {
     private final UsuarioService usuarioService;
     private final MainWindow parent;
 
-    Usuario usuarioSelecionado = (Usuario) usuarioJComboBox.getSelectedItem();
 
     // Construtorr que configura o diálogo
     public NovaPecaForm(MainWindow parent, PecaService pecaService, UsuarioService usuarioService) {
@@ -66,9 +65,9 @@ public class NovaPecaForm extends JDialog {
         // Painel de botões com flowLayout
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10 ,10));
         JButton btnSalvar = createButton("Salvar", this::salvarPeca, Color.GREEN.darker());
-        JButton btnCanelcar = createButton("Cancelar", this::dispose, Color.RED.darker());
+        JButton btnCancelar = createButton("Cancelar", this::dispose, Color.RED.darker());
 
-        buttonPanel.add(btnCanelcar);
+        buttonPanel.add(btnCancelar);
         buttonPanel.add(btnSalvar);
 
         // Adicionando componetes ao diálogo
