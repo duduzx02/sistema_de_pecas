@@ -57,11 +57,13 @@ public class MainWindow extends JFrame {
         tabela.setDefaultEditor(Object.class, null);
         JButton btnNovaPeca = new JButton("Nova Peça");
         JButton btnAtualizar = new JButton("Atualizar Lista");
+        JButton btnNovoUsuario = new JButton("Novo Usuário");
 
         // Painel de botões
         JPanel painelBotoes = new JPanel();
         painelBotoes.add(btnNovaPeca);
         painelBotoes.add(btnAtualizar);
+        painelBotoes.add(btnNovoUsuario);
 
         // Layout
         add(criarPainelFiltros(), BorderLayout.NORTH);
@@ -81,6 +83,11 @@ public class MainWindow extends JFrame {
         });
 
         btnAtualizar.addActionListener(e -> carregarPecas());
+
+        btnNovoUsuario.addActionListener(e -> {
+            NovoUsuarioForm form = new NovoUsuarioForm(this, usuarioService);
+            form.setVisible(true);
+        });
 
         // Detectando a tecla Delete
         tabela.addKeyListener(new KeyAdapter() {
@@ -183,6 +190,11 @@ public class MainWindow extends JFrame {
         for(Usuario usuario : usuarios){
             cbUsuarios.addItem(usuario);
         }
+    }
+
+    public void atualizarListarUsuarios(){
+        cbUsuarios.removeAll();
+        carregarUsuarios();
     }
 
     private void mostrarMensagem(String mensagem){
