@@ -31,4 +31,8 @@ public class PecaService {
     public Peca buscarPorId(Long id){
        return pecaRepository.findById(id).orElse(null);
     }
+
+    public List<Peca> listarPorUsuario(Long usuarioId){
+        return pecaRepository.findByUsuarioId(usuarioId);
+    }
 }

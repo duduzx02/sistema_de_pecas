@@ -39,4 +39,10 @@ public class Usuario {
     public void setPecas(List<Peca> pecas) {
         this.pecas = pecas;
     }
+
+    @Override
+    public String toString(){
+        return nome;
+    }
+
 }
