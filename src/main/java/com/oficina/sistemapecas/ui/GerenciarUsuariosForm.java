@@ -85,11 +85,26 @@ public class GerenciarUsuariosForm extends JDialog {
             Long id = (Long) model.getValueAt(row, 0);
             int confirm = JOptionPane.showConfirmDialog(this, "Confirma a exclusão do usuário", "confirmar",
                     JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_NO_OPTION){
-                usuarioService.excluir(id);
-                carregarUsuarios();
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    usuarioService.excluir(id);
+                    carregarUsuarios();
+                    JOptionPane.showMessageDialog(this, "Usuário excluído com sucesso!");
+                } catch (IllegalStateException ex) {
+                    // Aqui exibe a mensagem amigável
+                    JOptionPane.showMessageDialog(this,
+                            ex.getMessage(),  // Mensagem lançada no service
+                            "Erro ao excluir",
+                            JOptionPane.WARNING_MESSAGE);
+                } catch (Exception e) {
+                    // Para qualquer outro erro inesperado
+                    JOptionPane.showMessageDialog(this,
+                            "Erro inesperado: " + e.getMessage(),
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
-        } else{
+        } else {
             JOptionPane.showMessageDialog(this, "Selecione um usuário para excluir.");
         }
     }

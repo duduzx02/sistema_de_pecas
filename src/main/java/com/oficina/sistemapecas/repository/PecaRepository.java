@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface PecaRepository extends JpaRepository<Peca, Long> {
     List<Peca> findByUsuarioId(Long usuarioId);
+
+    long countByUsuarioId(long usuarioId);
 }
