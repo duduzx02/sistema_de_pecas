@@ -4,7 +4,7 @@ import com.oficina.sistemapecas.model.Peca;
 import com.oficina.sistemapecas.model.Urgencia;
 import com.oficina.sistemapecas.model.Usuario;
 import com.oficina.sistemapecas.service.PecaService;
-import com.oficina.sistemapecas.service.UsuarioService;
+
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;

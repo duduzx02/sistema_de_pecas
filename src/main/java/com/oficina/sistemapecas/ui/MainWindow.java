@@ -96,6 +96,7 @@ public class MainWindow extends JFrame {
         painel.add(criarBotao("Nova Peça", this::abrirFormularioNovaPeca));
         painel.add(criarBotao("Atualizar Lista", this::carregarPecas));
         painel.add(criarBotao("Novo Usuário", this::abrirFormularioNovoUsuario));
+        painel.add(criarBotao("Gerenciar Usuários", this::abrirGerenciadorUsuarios));
         return painel;
     }
 
@@ -123,7 +124,7 @@ public class MainWindow extends JFrame {
             return;
         }
 
-        NovaPecaForm form = new NovaPecaForm(this, pecaService, usuarioService, usuario);
+        NovaPecaForm form = new NovaPecaForm(this, pecaService, usuario);
         form.setVisible(true);
     }
 
@@ -186,6 +187,12 @@ public class MainWindow extends JFrame {
     }
 
     public void atualizarListarUsuarios() {
+        carregarUsuarios();
+    }
+
+    private void abrirGerenciadorUsuarios(){
+        GerenciarUsuariosForm form = new GerenciarUsuariosForm(this, usuarioService);
+        form.setVisible(true);
         carregarUsuarios();
     }
 
