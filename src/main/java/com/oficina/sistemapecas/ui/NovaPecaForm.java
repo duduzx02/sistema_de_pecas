@@ -14,47 +14,49 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 public class NovaPecaForm extends JDialog {
 
+    private static final int CAMPO_COLUNAS = 20;
+    private static final Color COR_SALVAR = Color.GREEN.darker();
+    private static final Color COR_CANCELAR = Color.RED.darker();
+
     private final Usuario usuarioSelecionado;
-    private final JTextField nomeField = new JTextField(20);
-    private final JTextField descricaoField = new JTextField(20);
+    private final JTextField nomeField = new JTextField(CAMPO_COLUNAS);
+    private final JTextField descricaoField = new JTextField(CAMPO_COLUNAS);
     private final JFormattedTextField valorField = criarCampoValor();
     private final JComboBox<Urgencia> urgenciaJComboBox = new JComboBox<>(Urgencia.values());
 
 
     private final PecaService pecaService;
-    private final UsuarioService usuarioService;
     private final MainWindow parent;
 
-    public NovaPecaForm(MainWindow parent, PecaService pecaService, UsuarioService usuarioService, Usuario usuarioSelecionado) {
+    public NovaPecaForm(MainWindow parent, PecaService pecaService, Usuario usuarioSelecionado) {
         super(parent, "Cadastro de Nova Peça", true);
         this.parent = parent;
         this.pecaService = pecaService;
-        this.usuarioService = usuarioService;
         this.usuarioSelecionado = usuarioSelecionado;
 
-        initComponents();
+
+        configurarJanela();
+        adicionarComponentes();
+        configurarAtalhosTeclado();
 
     }
 
-    private void initComponents() {
+    private void configurarJanela(){
         setLayout(new BorderLayout(10, 10));
         setSize(500, 350);
         setLocationRelativeTo(parent);
         setResizable(false);
-
-        JPanel formPanel = criarPainelFormulario();
-        JPanel buttonPanel = criarPainelBotoes();
-
-        add(formPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        configurarAtalhosTeclado();
     }
+
+    private void adicionarComponentes(){
+        add(criarPainelFormulario(), BorderLayout.CENTER);
+        add(criarPainelBotoes(), BorderLayout.SOUTH);
+    }
+
 
     private JPanel criarPainelFormulario() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -78,14 +80,15 @@ public class NovaPecaForm extends JDialog {
 
     private JPanel criarPainelBotoes() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        panel.add(criarBotao("Cancelar", this::dispose, Color.RED.darker()));
-        panel.add(criarBotao("Salvar", this::salvarPeca, Color.GREEN.darker()));
+        panel.add(criarBotao("Cancelar", this::dispose, COR_CANCELAR));
+        panel.add(criarBotao("Salvar", this::salvarPeca, COR_SALVAR));
         return panel;
     }
 
     private void addCampoFormulario(JPanel panel, GridBagConstraints gbc, int row, String label, JComponent campo) {
         gbc.gridx = 0;
         gbc.gridy = row;
+        gbc.weightx = 0;
         panel.add(new JLabel(label), gbc);
 
         gbc.gridx = 1;
@@ -188,15 +191,6 @@ public class NovaPecaForm extends JDialog {
             valorField.requestFocus();
             return false;
         }
-
-        // Se quiser reativar a validação do usuário:
-        /*
-        if (usuarioJComboBox.getSelectedItem() == null) {
-            mostrarErroValidacao("Selecione um responsável");
-            usuarioJComboBox.requestFocus();
-            return false;
-        }
-        */
 
         return true;
     }
