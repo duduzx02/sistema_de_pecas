@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -97,6 +98,7 @@ public class MainWindow extends JFrame {
         painel.add(criarBotao("Atualizar Lista", this::carregarPecas));
         painel.add(criarBotao("Novo Usuário", this::abrirFormularioNovoUsuario));
         painel.add(criarBotao("Gerenciar Usuários", this::abrirGerenciadorUsuarios));
+        painel.add(criarBotao("Imprimir Tabela", this::imprimirTabela));
         return painel;
     }
 
@@ -115,6 +117,21 @@ public class MainWindow extends JFrame {
                 }
             }
         });
+    }
+
+    private void imprimirTabela(){
+        try{
+            boolean sucesso = tabela.print(JTable.PrintMode.FIT_WIDTH,
+                    new MessageFormat("Lista de peças da Oficina"),
+                    new MessageFormat("Página {0}"));
+            if(sucesso){
+                mostrarMensagem("Impressão conclída com sucesso.");
+            } else {
+                mostrarMensagem("Impressão cancelada.");
+            }
+        }catch (Exception e){
+            mostrarMensagem("Erro ao tentar Imprimir: " + e.getMessage());
+        }
     }
 
     private void abrirFormularioNovaPeca() {
